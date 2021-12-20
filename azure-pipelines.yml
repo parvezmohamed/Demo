@@ -11,8 +11,8 @@ pool:
 
 stages:
   - stage: Build
-  jobs:
-    job: Buildjob
+    jobs:
+    - job: Buildjob
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
           inputs:
@@ -29,9 +29,9 @@ stages:
 
 stages: DEV
   dependson: Build
-    condition: and(succeeded(),not(eq(variables['Build.Reason'], 'PullRequest')))
-    jobs:
-    - deployment: deploy
+  condition: and(succeeded(),not(eq(variables['Build.Reason'], 'PullRequest')))
+  jobs:
+  - deployment: deploy
       environment: dev
       strategy:
         runOnce:
