@@ -31,47 +31,38 @@ stages:
   dependsOn: Build
   condition: and(succeeded(),not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
-  - deployment: deploy
-    environment: dev
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureResourceManagerTemplateDeployment@3
-            inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Pay-As-You-Go(2028b20d-0f43-4d65-bf77-ab97a513f6dc)'
-              subscriptionId: '2028b20d-0f43-4d65-bf77-ab97a513f6dc'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: 'CarMax'
-              location: 'East US'
-              templateLocation: 'Linked artifact'
-              csmFile: 'azuredeploy.json'
-              csmParametersFile: 'dev-azuredeploy.parameters.json'
-              deploymentMode: 'Incremental'
-
+    - job: Devjob
+      steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Pay-As-You-Go(2028b20d-0f43-4d65-bf77-ab97a513f6dc)'
+            subscriptionId: '2028b20d-0f43-4d65-bf77-ab97a513f6dc'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'CarMax'
+            location: 'East US'
+            templateLocation: 'Linked artifact'
+            csmFile: 'azuredeploy.json'
+            csmParametersFile: 'dev-azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
 - stage: QA
   dependsOn: DEV
   condition: and(succeeded(),not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
-  - deployment: deploy
-    environment: qa
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - task: AzureResourceManagerTemplateDeployment@3
-              inputs:
-                deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: 'Pay-As-You-Go(2028b20d-0f43-4d65-bf77-ab97a513f6dc)'
-                subscriptionId: '2028b20d-0f43-4d65-bf77-ab97a513f6dc'
-                action: 'Create Or Update Resource Group'
-                resourceGroupName: 'CarMax'
-                location: 'East US'
-                templateLocation: 'Linked artifact'
-                csmFile: 'azuredeploy.json'
-                csmParametersFile: 'qa-azuredeploy.parameters.json'
-                deploymentMode: 'Incremental'
+    - job: QAjob
+      steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'Pay-As-You-Go(2028b20d-0f43-4d65-bf77-ab97a513f6dc)'
+          subscriptionId: '2028b20d-0f43-4d65-bf77-ab97a513f6dc'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: 'CarMax'
+          location: 'East US'
+          templateLocation: 'Linked artifact'
+          csmFile: 'azuredeploy.json'
+          csmParametersFile: 'qa-azuredeploy.parameters.json'
+          deploymentMode: 'Incremental'
               
 
 
